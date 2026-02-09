@@ -1,0 +1,40 @@
+{
+  "id": "fruitman",
+  "name": "Fruitman",
+  "version": "1.0.0",
+  
+  "assets": {
+    "images": {
+      "background": "assets/backgrounds/bg_main.png",
+      "reels": "assets/backgrounds/reels.png"
+    },
+
+    "symbols": {
+      "A": "assets/symbols/A.png",
+      "K": "assets/symbols/K.png",
+      "scatter": "assets/symbols/scatter.png",
+      "wild": "assets/symbols/wild.png"
+    },
+
+    "atlases": {
+      "main": "assets/atlas/main.json",
+      "effects": "assets/atlas/effects.json"
+    },
+
+    "sounds": {
+      "spin": "assets/sounds/spin.mp3",
+      "win": "assets/sounds/win.mp3",
+      "bigwin": "assets/sounds/bigwin.mp3"
+    },
+
+    "fonts": {
+      "main": "assets/fonts/egypt.ttf"
+    }
+  },
+
+  "settings": {
+    "reels": 5,
+    "rows": 3,
+    "paylines": 20
+  }
+}
