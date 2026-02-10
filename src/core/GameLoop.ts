@@ -1,12 +1,25 @@
-import type { Application } from "pixi.js";
+import { Application } from "pixi.js";
 
 export class GameLoop {
-    constructor(private app: Application) {
-        this.app.ticker.minFPS = 60; 
-        this.app.ticker.maxFPS = 60;
-    }
 
-    add(fn: (delta: number) => void) {
-        this.app.ticker.add((time) => fn(time.deltaTime));
+  private updatables: Array<{ update: (delta: number) => void }> = [];
+
+  constructor(private app: Application) {
+    this.app.ticker.minFPS = 60; 
+    this.app.ticker.maxFPS = 60;
+    this.app.ticker.add((ticker) => {
+      this.update(ticker.deltaTime);
+    });
+  }
+
+  add(obj: { update: (delta: number) => void }) {
+    this.updatables.push(obj);
+  }
+
+  update(delta: number) {
+    for (const obj of this.updatables) {
+      obj.update(delta);
     }
+  }
+
 }

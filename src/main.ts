@@ -2,11 +2,12 @@
 import { createApp } from "./core/createApp";
 import { GameLoop } from "./core/GameLoop";
 
-// Objects
-import { Background } from "./objects/Background";
-
 // Loader 
 import { GameLoader } from "./loader/GameLoader";
+
+// Objects
+import { Background } from "./objects/Background";
+import { Bunny } from "./objects/Bunny";
 
 // Utils
 import { setupStats } from "./utils/stats";
@@ -30,11 +31,16 @@ import { setupDebugToggle } from "./utils/debug";
   const stats = setupStats(); 
   setupDebugToggle(stats);
 
+  // Bunny
+  const bunny = new Bunny(app);
+  await bunny.init();  
+
   // Ticker
   const loop = new GameLoop(app); 
-  loop.add((delta) => { 
-    stats.begin();
-    stats.end(); 
-  });  
+  loop.add(bunny); 
+  loop.add({ update(delta) {
+     stats.begin(); 
+     stats.end(); 
+  } });
   
 })();
