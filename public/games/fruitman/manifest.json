@@ -6,9 +6,7 @@
   "assets": {
     "images": {
       "background": "assets/backgrounds/bg_main.png",
-      "reels": "assets/backgrounds/reels.png",
-      "teszt": "assets/backgrounds/bg_main_teszt.png"
-
+      "reels": "assets/backgrounds/reels.png"
     },
 
     "symbols": {
