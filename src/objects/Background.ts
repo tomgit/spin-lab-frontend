@@ -13,7 +13,6 @@ export class Background {
         this.sprite = Sprite.from(manifest.assets.images.background);
         this.sprite.anchor.set(0.5);
         this.app.stage.addChildAt(this.sprite, 0);
-        // Listen for resize
         this.app.renderer.on("resize", this.resize, this);
         this.resize();
     }

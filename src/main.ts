@@ -10,7 +10,6 @@ import { GameLoader } from "./loader/GameLoader";
 
 // Objects
 import { Background } from "./objects/Background";
-import { Bunny } from "./objects/Bunny";
 
 // Utils
 import { setupStats } from "./utils/stats";
@@ -18,6 +17,7 @@ import { setupDebugToggle } from "./utils/debug";
 
 // Footer
 import { Footer } from "./objects/Footer";
+import { ReelGame } from "./engine/ReelGame";
 
 (async () => {
   const app = await createApp();
@@ -37,14 +37,14 @@ import { Footer } from "./objects/Footer";
   const background = new Background(app); 
   await background.init();
 
+  // ReelGame engine
+  const reelgame = new ReelGame(app, background); 
+  await reelgame.init();
+
   // Footer
   const footer = new Footer(app, "/assets/footer.png", background); 
   await footer.init();
   
-  // Bunny
-  const bunny = new Bunny(app) ;
-  await bunny.init();    
-
   // Hide the preloader
   setTimeout(() => {
     preloader.hide();  
@@ -56,7 +56,6 @@ import { Footer } from "./objects/Footer";
   
   // Ticker
   const loop = new GameLoop(app); 
-  loop.add(bunny); 
   loop.add({ update(delta) {
      stats.begin(); 
      stats.end(); 

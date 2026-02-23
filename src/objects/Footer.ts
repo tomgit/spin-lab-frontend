@@ -8,7 +8,6 @@ import { UIButton } from "../ui/UIButton";
 export async function loadWebFont() { 
     const font = new FontFaceObserver("Montserrat"); 
     await font.load(); 
-    console.log("Font loaded!"); 
 }
 
 export class Footer {
@@ -28,11 +27,7 @@ export class Footer {
         this.sprite = new Sprite(texture);
 
         this.sprite.anchor.set(0.5, 1);
-
-        // a sprite a container gyereke
         this.container.addChild(this.sprite);
-
-        // container mehet a stage-re
         this.app.stage.addChild(this.container);
 
         const uiSheet = new SpriteSheet("/assets/dt_gui.json"); 
@@ -50,9 +45,7 @@ export class Footer {
         const screenW = this.app.screen.width;
         const screenH = this.app.screen.height;
         const scale = this.background.scaleValue;
-        // a container skálázása
         this.container.scale.set(scale);
-        // a container pozicionálása
         this.container.position.set(screenW / 2, screenH);
     }
 

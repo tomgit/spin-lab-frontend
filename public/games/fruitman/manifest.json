@@ -6,7 +6,9 @@
   "assets": {
     "images": {
       "background": "assets/backgrounds/bg_main.png",
-      "reels": "assets/backgrounds/reels.png"
+      "reelBG": "assets/backgrounds/reelBG@4x.png",
+      "reelFG": "assets/backgrounds/fg@4x.png",
+      "header": "assets/images/header@4x.png"
     },
 
     "symbols": {
@@ -17,8 +19,15 @@
     },
 
     "atlases": {
-      "main": "assets/atlas/main.json",
-      "effects": "assets/atlas/effects.json"
+      "symbols": "assets/atlases/textures-symbols@4x.json",
+      "symbolanim_1": "assets/atlases/textures-symbolanim_1_1@4x.json",
+      "symbolanim_2": "assets/atlases/textures-symbolanim_2_1@4x.json",
+      "symbolanim_3": "assets/atlases/textures-symbolanim_3_1@4x.json",
+      "symbolanim_4": "assets/atlases/textures-symbolanim_4_1@4x.json",
+      "symbolanim_5": "assets/atlases/textures-symbolanim_5_1@4x.json",
+      "symbolanim_6": "assets/atlases/textures-symbolanim_6_1@4x.json",
+      "symbolanim_7": "assets/atlases/textures-symbolanim_7_1@4x.json",
+      "symbolanim_8": "assets/atlases/textures-symbolanim_8_1@4x.json"
     },
 
     "sounds": {
