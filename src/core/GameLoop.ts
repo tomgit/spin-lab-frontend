@@ -1,3 +1,4 @@
+//GameLoop.ts
 import { Application } from "pixi.js";
 
 export class GameLoop {

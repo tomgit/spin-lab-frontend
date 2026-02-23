@@ -1,22 +1,22 @@
+// GameLoader.ts
 import { loadGameManifest } from "./loadGameManifest";
 import { loadGameAssets } from "./loadGameAssets";
 import { setManifest } from "../state/manifestStore";
-import type { GameManifest } from "../types/GameManifest";
-import { prefixManifestPaths } from "./prefixManifestPaths"
+import { prefixManifestPaths } from "./prefixManifestPaths";
 
 export class GameLoader {
-  static async load(gameId: string): Promise<GameManifest> {
+  
+  static async load(gameId: string, onProgress?: (p: number) => void) {
     const basePath = `games/${gameId}/`;
     const manifestPath = `${basePath}manifest.json`;
-
     const manifest = await loadGameManifest(manifestPath);
 
-    // Prefixeljük az asset path-okat
     prefixManifestPaths(manifest, basePath);
-
     setManifest(manifest);
-    await loadGameAssets(manifest);
+
+    await loadGameAssets(manifest, onProgress);
 
     return manifest;
   }
+
 }

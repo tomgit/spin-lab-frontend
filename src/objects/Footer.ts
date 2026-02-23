@@ -1,8 +1,9 @@
+//Footer.ts
 import { Application, Assets, Sprite, Container } from "pixi.js";
 import { Background } from "./Background";
 import { SpriteSheet } from "./SpriteSheet";
-import { Text } from "pixi.js";
 import FontFaceObserver from "fontfaceobserver";
+import { UIButton } from "../ui/UIButton";
 
 export async function loadWebFont() { 
     const font = new FontFaceObserver("Montserrat"); 
@@ -36,26 +37,10 @@ export class Footer {
 
         const uiSheet = new SpriteSheet("/assets/dt_gui.json"); 
         await uiSheet.init(); 
-        const playBtn = uiSheet.create("dt_button_enabled"); 
-        playBtn.anchor.set(.5, 0.5); 
-        playBtn.position.set(1140, -this.sprite.height / 2 + 44);
-        this.addButton(playBtn);
 
-        // SZÖVEG A GOMBON
-        const label = new Text({
-        text: "PLAY",
-        style: {
-            fontFamily: "Montserrat",
-            fontSize: 54,
-            fill: 0xffffff,
-            align: "center",
-            fontWeight: "700", // vagy "bold"
-        }
-        });
-
-        label.anchor.set(0.5);
-        label.position.set(playBtn.x, playBtn.y);
-        this.container.addChild(label);
+        const playBtn = new UIButton(uiSheet.getTexture("dt_button_enabled"), "PLAY"); 
+        playBtn.container.position.set(1140, -this.sprite.height / 2 + 44);
+        this.container.addChild(playBtn.container);        
 
         this.resize();
         this.app.renderer.on("resize", () => this.resize());        
@@ -71,8 +56,4 @@ export class Footer {
         this.container.position.set(screenW / 2, screenH);
     }
 
-    addButton(btn: Sprite) {
-        // a gombot a containerbe tesszük
-        this.container.addChild(btn);
-    }
 }

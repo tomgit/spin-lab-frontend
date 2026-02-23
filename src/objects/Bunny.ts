@@ -1,3 +1,4 @@
+//Bunny.ts
 import { Application, Assets, Sprite } from "pixi.js";
 
 export class Bunny {

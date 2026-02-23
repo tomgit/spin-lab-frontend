@@ -1,8 +1,10 @@
+//Background.ts
 import { Application, Sprite } from "pixi.js";
 import { getManifest } from "../state/manifestStore";
 
 export class Background {
     sprite!: Sprite;
+    public scaleValue = 1; 
 
     constructor(private app: Application) {}
 
@@ -24,6 +26,7 @@ export class Background {
         const scaleByHeight = screenH / texH;
         const scaleByWidth = screenW / texW;
         const scale = Math.min(scaleByHeight, scaleByWidth);
+        this.scaleValue = scale;
         this.sprite.scale.set(scale);
         this.sprite.position.set(screenW / 2, screenH / 2);
     }

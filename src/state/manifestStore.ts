@@ -1,3 +1,4 @@
+//manifestStore.ts
 import type { GameManifest } from "../types/GameManifest";
 
 let manifest: GameManifest | null = null;

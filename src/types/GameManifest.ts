@@ -1,4 +1,4 @@
-// src/types/GameManifest.ts
+//GameManifest.ts
 export interface GameManifest {
   id: string;
   name: string;
