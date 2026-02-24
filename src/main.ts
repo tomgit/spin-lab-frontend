@@ -37,18 +37,15 @@ import { ReelGame } from "./engine/ReelGame";
   const background = new Background(app); 
   await background.init();
 
-  // ReelGame engine
-  const reelgame = new ReelGame(app, background); 
-  await reelgame.init();
-
   // Footer
   const footer = new Footer(app, "/assets/footer.png", background); 
   await footer.init();
-  
-  // Hide the preloader
-  setTimeout(() => {
-    preloader.hide();  
-  }, 200);
+
+  // ReelGame engine
+  const reelgame = new ReelGame(app, background, footer); 
+  await reelgame.init();
+
+  preloader.hide();  
 
   // FPS display
   const stats = setupStats(); 

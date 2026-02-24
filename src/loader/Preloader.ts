@@ -8,22 +8,24 @@ export class Preloader {
     barFill!: Graphics;
     label!: Text;
 
+    private resizeHandler!: () => void;
+
     constructor(private app: Application) {}
 
     async init() {
-        // háttér betöltése
         this.container.zIndex = 9999;
+
+        // background
         const tex = await Assets.load("/assets/preloader_bg.png");
         this.bg = new Sprite(tex);
         this.bg.anchor.set(0.5);
-        this.bg.position.set(this.app.screen.width / 2, this.app.screen.height / 2);
 
-        // progress bar töltés
+        // progress bar
         this.barFill = new Graphics()
             .roundRect(0, 0, 1, 20, 10)
             .fill(0x00ff66);
 
-        // felirat
+        // label
         this.label = new Text({
             text: "0%",
             style: {
@@ -34,18 +36,37 @@ export class Preloader {
         });
         this.label.anchor.set(0.5);
 
-        // pozicionálás
-        const barX = this.app.screen.width / 2 - 755;
-        const barY = this.app.screen.height / 2 - 75;
-
-        this.barFill.position.set(barX, barY);
-        this.label.position.set(this.app.screen.width / 2, barY + 160);
-
-        // containerbe rakjuk
         this.container.addChild(this.bg, this.barFill, this.label);
-
-        // overlay a stage-re
         this.app.stage.addChild(this.container);
+
+        this.resize();
+        this.resizeHandler = () => this.resize(); 
+        this.app.renderer.on("resize", this.resizeHandler);        
+    }
+
+    resize() {
+        const screenW = this.app.screen.width;
+        const screenH = this.app.screen.height;
+
+        // preloader háttér eredeti mérete
+        const texW = this.bg.texture.orig.width;
+        const texH = this.bg.texture.orig.height;
+
+        // skála kiszámítása (hogy beleférjen a képernyőbe)
+        const scaleByWidth = screenW / texW;
+        const scaleByHeight = screenH / texH;
+        const scale = Math.min(scaleByWidth, scaleByHeight);
+
+        // container scale
+        this.container.scale.set(scale);
+
+        // container to the middle
+        this.container.position.set(screenW / 2, screenH / 2);
+
+        // progress bar position
+        const barY = texH * 0.15 - 290;  
+        this.barFill.position.set(-texW * 0.5 + 526, barY);
+        this.label.position.set(0, barY + 160);
     }
 
     updateProgress(p: number) {
@@ -54,6 +75,7 @@ export class Preloader {
     }
 
     hide() {
+        this.app.renderer.off("resize", this.resizeHandler);
         this.container.destroy({ children: true });
     }
 }

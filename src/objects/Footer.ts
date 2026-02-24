@@ -21,7 +21,7 @@ export class Footer {
     ) {}
 
     async init() {
-        await loadWebFont(); // FONT BETÖLTÉSE
+        await loadWebFont();
 
         const texture = await Assets.load(this.url);
         this.sprite = new Sprite(texture);
