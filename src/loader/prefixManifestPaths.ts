@@ -1,15 +1,20 @@
 import type { GameManifest } from "../types/GameManifest";
 
 export function prefixManifestPaths(manifest: GameManifest, basePath: string) {
+
   const groups = manifest.assets;
 
-  type AssetGroupName = keyof typeof groups;
-
-  for (const groupName of Object.keys(groups) as AssetGroupName[]) {
-    const group = groups[groupName];
-
-    for (const key in group) {
-      group[key] = basePath + group[key];
+  for (const groupName of Object.keys(groups)) {
+    const group = groups[groupName as keyof typeof groups];
+    if (Array.isArray(group)) {
+      for (let i = 0; i < group.length; i++) {
+        group[i] = basePath + group[i];
+      }
+    } else {
+      for (const key of Object.keys(group)) {
+        group[key] = basePath + group[key];
+      }
     }
   }
 }
+

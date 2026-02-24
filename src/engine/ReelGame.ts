@@ -27,9 +27,9 @@ export class ReelGame {
         this.manifest = getManifest();
         this.createBG();
         this.container.addChild(this.reelArea);
+        this.createMask();
         this.createFG();
         this.createReels();
-        this.createMask();
         this.createHeader();
         this.resize();
         this.resizeHandler = () => this.resize(); 
@@ -64,15 +64,15 @@ export class ReelGame {
 
     createMask() {
         const mask = new Graphics();
-        mask.beginFill(0xffffff);
+        mask.fill(0xffffff);
         // A reelBG mérete alapján rajzolunk egy téglalapot
-        mask.drawRect(
+        mask.rect(
             this.reelBG.x - this.reelBG.width / 2,
             this.reelBG.y - this.reelBG.height / 2,
             this.reelBG.width,
             this.reelBG.height
         );
-        mask.endFill();
+        mask.fill();
         this.container.addChild(mask);
         this.reelArea.mask = mask;
     }
