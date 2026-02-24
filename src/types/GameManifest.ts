@@ -10,6 +10,7 @@ export interface GameManifest {
     atlases: Record<string, string>;
     sounds: Record<string, string>;
     fonts: Record<string, string>;
+    winlines: string[];
   };
   symbolNames: string[];
   settings: {

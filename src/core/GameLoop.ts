@@ -6,7 +6,6 @@ export class GameLoop {
   private updatables: Array<{ update: (delta: number) => void }> = [];
 
   constructor(private app: Application) {
-    this.app.ticker.minFPS = 60; 
     this.app.ticker.maxFPS = 60;
     this.app.ticker.add((ticker) => {
       this.update(ticker.deltaTime);

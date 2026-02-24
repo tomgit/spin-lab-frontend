@@ -27,8 +27,23 @@
       "symbolanim_5": "assets/atlases/textures-symbolanim_5_1@4x.json",
       "symbolanim_6": "assets/atlases/textures-symbolanim_6_1@4x.json",
       "symbolanim_7": "assets/atlases/textures-symbolanim_7_1@4x.json",
-      "symbolanim_8": "assets/atlases/textures-symbolanim_8_1@4x.json"
+      "symbolanim_8": "assets/atlases/textures-symbolanim_8_1@4x.json",
+      "frames": "assets/atlases/frames/frames.json",
+      "indicators": "assets/atlases/indicators/indicators.json"
     },
+
+    "winlines": [ 
+      "assets/images/lines/00.png", 
+      "assets/images/lines/01.png", 
+      "assets/images/lines/02.png", 
+      "assets/images/lines/03.png", 
+      "assets/images/lines/04.png", 
+      "assets/images/lines/05.png", 
+      "assets/images/lines/06.png", 
+      "assets/images/lines/07.png", 
+      "assets/images/lines/08.png", 
+      "assets/images/lines/09.png" 
+    ],    
 
     "sounds": {
       "spin": "assets/sounds/spin.mp3",
@@ -53,6 +68,6 @@
   "settings": {
     "reels": 5,
     "rows": 3,
-    "paylines": 20
+    "paylines": 10
   }
 }

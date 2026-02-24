@@ -20,6 +20,12 @@ export async function loadGameAssets(
     }
   }
 
+  // 3) Winline images 
+  if (manifest.assets.winlines) { 
+    for (const path of manifest.assets.winlines) { 
+      assetList.push(path); } 
+    }  
+
   const total = assetList.length;
   let loaded = 0;
 
