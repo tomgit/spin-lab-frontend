@@ -41,6 +41,15 @@
     }
   },
 
+  "symbolNames": [ "symbol_1_base", 
+                   "symbol_2_base", 
+                   "symbol_3_base", 
+                   "symbol_4_base", 
+                   "symbol_5_base", 
+                   "symbol_6_base", 
+                   "symbol_7_base", 
+                   "symbol_8_base"
+                 ],
   "settings": {
     "reels": 5,
     "rows": 3,

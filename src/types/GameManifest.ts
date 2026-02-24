@@ -11,7 +11,7 @@ export interface GameManifest {
     sounds: Record<string, string>;
     fonts: Record<string, string>;
   };
-
+  symbolNames: string[];
   settings: {
     reels: number;
     rows: number;

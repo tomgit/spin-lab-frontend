@@ -21,19 +21,25 @@ import { ReelGame } from "./engine/ReelGame";
 
 (async () => {
   const app = await createApp();
+
+  if (import.meta.env.DEV) { 
+    globalThis.__PIXI_APP__ = app; 
+  }
+
   app.stage.sortableChildren = true;
 
   // URL params 
   const params = new URLSearchParams(window.location.search); 
   const game = params.get("game") || "fruitman"; 
 
+  // Preloader
   const preloader = new Preloader(app);
   await preloader.init();
   
   // Load manifest + assets
   await GameLoader.load(game, (p) => preloader.updateProgress(p));
 
-  // Background
+  // Main Background
   const background = new Background(app); 
   await background.init();
 
