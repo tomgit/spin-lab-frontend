@@ -1,5 +1,5 @@
 //Footer.ts
-import { Application, Sprite, Container, Assets } from "pixi.js";
+import { Application, Sprite, Container, Assets, Graphics } from "pixi.js";
 import { Background } from "../objects/Background";
 import { getManifest } from "../state/manifestStore";
 import { Footer } from "../objects/Footer";
@@ -13,8 +13,8 @@ export class ReelGame {
     reelFG!: Sprite;
     reels: Container[] = [];
     manifest!: GameManifest;
-
     private resizeHandler!: () => void;
+    reelArea = new Container();    
 
     constructor(
         private app: Application,
@@ -26,8 +26,10 @@ export class ReelGame {
         this.app.stage.addChild(this.container);
         this.manifest = getManifest();
         this.createBG();
+        this.container.addChild(this.reelArea);
         this.createFG();
         this.createReels();
+        this.createMask();
         this.createHeader();
         this.resize();
         this.resizeHandler = () => this.resize(); 
@@ -57,12 +59,28 @@ export class ReelGame {
         this.reelFG.scale.set(3.5);
         this.reelFG.anchor.set(0.5, 0.5);
         this.container.addChild(this.reelFG);
+        this.reelFG.visible = false;
+    }
+
+    createMask() {
+        const mask = new Graphics();
+        mask.beginFill(0xffffff);
+        // A reelBG mérete alapján rajzolunk egy téglalapot
+        mask.drawRect(
+            this.reelBG.x - this.reelBG.width / 2,
+            this.reelBG.y - this.reelBG.height / 2,
+            this.reelBG.width,
+            this.reelBG.height
+        );
+        mask.endFill();
+        this.container.addChild(mask);
+        this.reelArea.mask = mask;
     }
 
     //reel creation
     createReels() {
         const reelCount = 5;
-        const symbolsPerReel = 3;
+        const symbolsPerReel = 4;
         const symbolNames = this.manifest.symbolNames; 
         const atlas = this.manifest.assets.atlases.symbols;
         const sheet = Assets.get(atlas);
@@ -71,9 +89,9 @@ export class ReelGame {
         for (let i = 0; i < reelCount; i++) {
             const reel = new Reel(sheet, symbolNames, symbolsPerReel, 300);
             reel.container.x = startX + i * reelSpacing;
-            reel.container.y = 2;
+            reel.container.y = 26 - reelSpacing;
             reel.createSymbols();
-            this.container.addChild(reel.container);
+            this.reelArea.addChild(reel.container);
             this.reels.push(reel.container);
         }
     }
