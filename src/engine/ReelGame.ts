@@ -7,6 +7,7 @@ import { GameManifest } from "../types/GameManifest";
 import { Reel } from "../objects/Reel";
 import { GameController } from "../controller/GameController";
 import { GameLoop } from "../core/GameLoop";
+import { SymbolAnimator } from "./SymbolAnimator";
 
 export class ReelGame {
     container = new Container();
@@ -20,6 +21,8 @@ export class ReelGame {
     private resizeHandler!: () => void;
 
     reelObjects: Reel[] = [];
+
+    symbolAnimator!: SymbolAnimator;
 
     constructor(
         private app: Application,
@@ -37,6 +40,7 @@ export class ReelGame {
         this.container.addChild(this.reelArea);
         this.createFG();
         this.createReels();
+        this.createSymbolAnimator();
         this.createMask();
         this.createHeader();
         this.resize();
@@ -44,6 +48,12 @@ export class ReelGame {
         this.app.renderer.on("resize", this.resizeHandler);
         // PIXI ticker → minden frame-ben frissítjük a tárcsákat
         this.app.ticker.add((ticker) => this.update(ticker.deltaTime));
+    }
+
+    createSymbolAnimator() {
+        const symbolAnimator = new SymbolAnimator(this.reelObjects);
+        this.reelArea.addChild(symbolAnimator.container);
+        this.symbolAnimator = symbolAnimator;
     }
 
     update(delta: number) {
@@ -54,6 +64,7 @@ export class ReelGame {
 
     handleMessage(msg: any) {
         if (msg.type === "spinStart") {
+            this.symbolAnimator.stopAll();
             this.startReels(msg);
         }
 
@@ -75,6 +86,12 @@ export class ReelGame {
            this.startReels(msg) 
         }, 2800);
         */
+    }
+
+    onSpinStop() {
+        this.symbolAnimator.playForSymbol(7, 0, 0, true);
+        this.symbolAnimator.playForSymbol(7, 1, 0, true);
+        this.symbolAnimator.playForSymbol(7, 2, 0, true);        
     }
 
     stopReel(id: number) {
@@ -149,7 +166,7 @@ export class ReelGame {
         const startX = -((reelCount - 1) * reelSpacing) / 2;
 
         for (let i = 0; i < reelCount; i++) {
-            const reel = new Reel(sheet, strip, visibleSymbols, spacing, i);
+            const reel = new Reel(this, sheet, strip, visibleSymbols, spacing, i);
             reel.init();
             reel.container.x = startX + i * reelSpacing;
             reel.container.y = -600;

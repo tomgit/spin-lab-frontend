@@ -1,10 +1,11 @@
 //Reel.ts
 import { Container, Sprite, Spritesheet } from "pixi.js";
 import { gsap } from "gsap";
+import { ReelGame } from "../engine/ReelGame";
 
 export class Reel {
     container = new Container();
-    private sprites: Sprite[] = [];
+    public sprites: Sprite[] = [];
     private virtualPos = 0;
     private speed = 0;
     private spinning = false;
@@ -16,6 +17,7 @@ export class Reel {
     private finalSymbols = [];
 
     constructor(
+        private reelgame: ReelGame,
         private sheet: Spritesheet,
         private strip: string[],
         private visibleCount = 3,
@@ -26,6 +28,7 @@ export class Reel {
     init() {
         for (let i = 0; i < this.visibleCount + 1; i++) {
             const s = new Sprite(this.sheet.textures[this.strip[Math.floor(Math.random() * 8)]]);
+            //const s = new Sprite(this.sheet.textures[this.strip[6]]);
             s.anchor.set(0.5);
             s.scale.set(0.82);
             s.y = i * this.spacing;
@@ -38,7 +41,7 @@ export class Reel {
 
     startSpin(initialSpeed = 2000, msg: any) {
         const reversed = [...msg].reverse();
-        console.log(reversed);
+        //console.log(reversed);
         this.finalSymbols = msg;
         this.spinCount = 0;
         this.speed = initialSpeed;
@@ -131,7 +134,11 @@ export class Reel {
             {
                 y: baseY,
                 duration: 0.35,
-                ease: "sine.out"
+                ease: "sine.out",
+                onComplete: () => { 
+                    if (this. index === 4)
+                        this.reelgame.onSpinStop();
+                }
             }
         );
     }

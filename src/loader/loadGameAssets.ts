@@ -6,7 +6,9 @@ export async function loadGameAssets(
   manifest: GameManifest,
   onProgress?: (progress: number) => void,
 ) {
-  const assetList: string[] = [];
+  //const assetList: string[] = [];
+
+  const assetList: any[] = [];
 
   // 1) Images
   for (const key in manifest.assets.images) {
@@ -19,6 +21,15 @@ export async function loadGameAssets(
       assetList.push(manifest.assets.atlases[key]);
     }
   }
+
+  if (manifest.assets.atlases) {
+  
+    for (const key in manifest.assets.atlases) {
+    const url = manifest.assets.atlases[key];
+    assetList.push({ alias: key, src: url });
+    }
+  }
+
 
   // 3) Winline images
   if (manifest.assets.winlines) {

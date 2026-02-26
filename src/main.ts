@@ -19,6 +19,8 @@ import { setupDebugToggle } from "./utils/debug";
 import { Footer } from "./objects/Footer";
 import { ReelGame } from "./engine/ReelGame";
 import { GameController } from "./controller/GameController";
+import { Winline } from "./objects/Winline";
+import { Texture } from "pixi.js";
 
 (async () => {
   const app = await createApp();
@@ -38,7 +40,7 @@ import { GameController } from "./controller/GameController";
   await preloader.init();
 
   // Load manifest + assets
-  await GameLoader.load(game, (p) => preloader.updateProgress(p));
+  const manifest = await GameLoader.load(game, (p) => preloader.updateProgress(p));
 
   // Main Background
   const background = new Background(app);
@@ -65,10 +67,15 @@ import { GameController } from "./controller/GameController";
     },
   });
 
-
   // ReelGame engine
   const reelgame = new ReelGame(app, background, footer, controller, loop);
   await reelgame.init();
+
+  // Winlines
+  const winlineTextures = manifest.assets.winlines.map(path => Texture.from(path));
+  const winline = new Winline(winlineTextures);
+  app.stage.addChild(winline.container);
+
 
   preloader.hide();
 
