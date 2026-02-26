@@ -2,7 +2,6 @@
 import { Application } from "pixi.js";
 
 export class GameLoop {
-
   private updatables: Array<{ update: (delta: number) => void }> = [];
 
   constructor(private app: Application) {
@@ -21,5 +20,4 @@ export class GameLoop {
       obj.update(delta);
     }
   }
-
 }

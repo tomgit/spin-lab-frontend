@@ -13,4 +13,3 @@ export function getManifest(): GameManifest {
   }
   return manifest;
 }
-
