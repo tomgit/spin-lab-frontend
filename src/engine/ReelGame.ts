@@ -8,6 +8,8 @@ import { Reel } from "../objects/Reel";
 import { GameController } from "../controller/GameController";
 import { GameLoop } from "../core/GameLoop";
 import { SymbolAnimator } from "./SymbolAnimator";
+import { SoundManager } from "./SoundManager";
+
 
 export class ReelGame {
     container = new Container();
@@ -43,6 +45,7 @@ export class ReelGame {
         this.createSymbolAnimator();
         this.createMask();
         this.createHeader();
+        this.loadSounds();
         this.resize();
         this.resizeHandler = () => this.resize();
         this.app.renderer.on("resize", this.resizeHandler);
@@ -65,6 +68,10 @@ export class ReelGame {
     handleMessage(msg: any) {
         if (msg.type === "spinStart") {
             this.symbolAnimator.stopAll();
+            this.symbolAnimator.removeAllWinFrames();
+            SoundManager.getInstance().stopAll();
+            const n = Math.floor(Math.random() * 5) + 1;
+            SoundManager.getInstance().play(`reelspin${n}`);
             this.startReels(msg);
         }
 
@@ -78,20 +85,27 @@ export class ReelGame {
         //console.log(msg);
         for (let i = 0; i < this.reelObjects.length; i++) {
             const reel = this.reelObjects[i];
-            reel.startSpin(26, msg.reels[i].reverse()); 
+            reel.startSpin(35, msg.reels[i].reverse()); 
+            //reel.startSpin(26, msg.reels[i].reverse()); 
             //reel.startSpin(8, msg.reels[i]); 
         }
-        /*
+        //this.autoplay();
+    }
+
+    autoplay() {
         setTimeout(() => {
-           this.startReels(msg) 
-        }, 2800);
-        */
+        this.symbolAnimator.stopAll();
+           this.controller.requestSpin();
+           //this.startReels(msg.reverse) 
+        }, 3800);
     }
 
     onSpinStop() {
         this.symbolAnimator.playForSymbol(7, 0, 0, true);
         this.symbolAnimator.playForSymbol(7, 1, 0, true);
-        this.symbolAnimator.playForSymbol(7, 2, 0, true);        
+        this.symbolAnimator.playForSymbol(7, 2, 0, true);     
+        
+        this.symbolAnimator.playForSymbol(8, 2, 2, true);     
     }
 
     stopReel(id: number) {
@@ -190,6 +204,34 @@ export class ReelGame {
         if (screenH > this.background.sprite.height + 80) {
             this.container.position.set(screenW / 2, screenH / 2);
         }
+    }
+
+    start() {
+        SoundManager.getInstance().play("welcome");
+    }
+
+    private loadSounds() {
+        const sm = SoundManager.getInstance();
+
+        for (let i = 1; i <= 5; i++) {
+            sm.load(
+                `reelspin${i}`,
+                `games/fruitman/assets/sounds/Reelspin ${i}.mp3`,
+                `games/fruitman/assets/sounds/ogg/Reelspin ${i}.ogg`
+            );
+
+            sm.load(
+                `reelstop${i}`,
+                `games/fruitman/assets/sounds/Reelstop ${i}.mp3`,
+                `games/fruitman/assets/sounds/ogg/Reelstop ${i}.ogg`
+            );
+        }
+
+        sm.load(
+            "welcome",
+            `games/fruitman/assets/sounds/welcome.mp3`,
+            `games/fruitman/assets/sounds/ogg/welcome.ogg`
+        );
     }
 
     destroy() {

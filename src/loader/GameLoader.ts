@@ -15,6 +15,7 @@ export class GameLoader {
 
     await loadGameAssets(manifest, onProgress);
 
+
     return manifest;
   }
 }

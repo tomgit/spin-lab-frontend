@@ -5,6 +5,8 @@ import { SpriteSheet } from "./SpriteSheet";
 import FontFaceObserver from "fontfaceobserver";
 import { UIButton } from "../ui/UIButton";
 import { GameController } from "../controller/GameController";
+import { SoundManager } from "../engine/SoundManager";
+
 
 export async function loadWebFont() {
   const font = new FontFaceObserver("Montserrat");

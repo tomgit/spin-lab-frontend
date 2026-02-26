@@ -21,6 +21,7 @@ import { ReelGame } from "./engine/ReelGame";
 import { GameController } from "./controller/GameController";
 import { Winline } from "./objects/Winline";
 import { Texture } from "pixi.js";
+import { SoundManager } from "./engine/SoundManager";
 
 (async () => {
   const app = await createApp();
@@ -76,7 +77,11 @@ import { Texture } from "pixi.js";
   const winline = new Winline(winlineTextures);
   app.stage.addChild(winline.container);
 
-
   preloader.hide();
+
+  preloader.showTapToStart(() => {
+      reelgame.start();
+  });
+
 
 })();

@@ -2,6 +2,7 @@
 import { Container, Sprite, Spritesheet } from "pixi.js";
 import { gsap } from "gsap";
 import { ReelGame } from "../engine/ReelGame";
+import { SoundManager } from "../engine/SoundManager";
 
 export class Reel {
     container = new Container();
@@ -35,7 +36,7 @@ export class Reel {
             this.container.addChild(s);
             this.sprites.push(s);
         }
-        this.stopAt = 12 + this.index * 2;
+        this.stopAt = 16 + this.index * 4;
         this.prepareAt = this.stopAt - 3;
     }
 
@@ -127,6 +128,8 @@ export class Reel {
 
     //End tween
     private finishTween() {
+        const n = Math.floor(Math.random() * 5) + 1;
+        SoundManager.getInstance().play(`reelstop${n}`);
         const baseY = this.container.y;
         gsap.fromTo(
             this.container,
