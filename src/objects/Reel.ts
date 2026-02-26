@@ -26,6 +26,10 @@ export class Reel {
         public index = 0
     ) {}
 
+    setStopReel() {
+        this.spinCount = this.prepareAt - 1;
+    }
+
     init() {
         for (let i = 0; i < this.visibleCount + 1; i++) {
             const s = new Sprite(this.sheet.textures[this.strip[Math.floor(Math.random() * 8)]]);

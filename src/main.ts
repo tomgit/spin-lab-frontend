@@ -72,6 +72,9 @@ import { SoundManager } from "./engine/SoundManager";
   const reelgame = new ReelGame(app, background, footer, controller, loop);
   await reelgame.init();
 
+  // Pass to the controller
+  controller.setReelGame(reelgame);
+
   // Winlines
   const winlineTextures = manifest.assets.winlines.map(path => Texture.from(path));
   const winline = new Winline(winlineTextures);

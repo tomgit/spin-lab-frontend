@@ -4,9 +4,10 @@ import { Background } from "./Background";
 import { SpriteSheet } from "./SpriteSheet";
 import FontFaceObserver from "fontfaceobserver";
 import { UIButton } from "../ui/UIButton";
+import { SpinButton } from "../ui/SpinButton";
 import { GameController } from "../controller/GameController";
+import { GameState } from "../state/GameState";
 import { SoundManager } from "../engine/SoundManager";
-
 
 export async function loadWebFont() {
   const font = new FontFaceObserver("Montserrat");
@@ -26,27 +27,73 @@ export class Footer {
 
   async init() {
     await loadWebFont();
-
     const texture = await Assets.load(this.url);
     this.sprite = new Sprite(texture);
-
     this.sprite.anchor.set(0.5, 1);
     this.container.addChild(this.sprite);
     this.app.stage.addChild(this.container);
 
     const uiSheet = new SpriteSheet("/assets/dt_gui.json");
     await uiSheet.init();
+    //this.createPlayButton(uiSheet);
+    this.createSpinButton(uiSheet);
+    this.resize();
+    this.app.renderer.on("resize", () => this.resize());
+  }
 
+  createPlayButton(uiSheet: SpriteSheet){
     const playBtn = new UIButton(
-      uiSheet.getTexture("dt_button_enabled"),
-      "PLAY",
+      {
+        enabled: uiSheet.getTexture("dt_button_enabled"),
+        disabled: uiSheet.getTexture("dt_button_disabled"),
+        hover: uiSheet.getTexture("dt_button_hover"),
+        pressed: uiSheet.getTexture("dt_button_pressed"),
+      },
+      "PLAY"
     );
     playBtn.container.position.set(1140, -this.sprite.height / 2 + 44);
     this.container.addChild(playBtn.container);
     playBtn.container.on("pointerdown", () => this.onStartClick());
+  }
 
-    this.resize();
-    this.app.renderer.on("resize", () => this.resize());
+  createSpinButton(uiSheet: SpriteSheet){
+    const spinBtn = new SpinButton({
+      enabled: uiSheet.getTexture("dt_button_enabled2"),
+      disabled: uiSheet.getTexture("dt_button_disabled2"),
+      hover: uiSheet.getTexture("dt_button_hover2"),
+      pressed: uiSheet.getTexture("dt_button_pressed2"),
+    });
+    spinBtn.container.position.set(1140, -this.sprite.height / 2 + 44);
+    this.container.addChild(spinBtn.container);
+
+    this.controller.state.onChange((state) => {
+      if (state === GameState.Idle) {
+        spinBtn.mode = "start";
+        spinBtn.enabled = true;
+      }
+
+      if (state === GameState.Spinning) {
+        spinBtn.mode = "stop";
+        spinBtn.enabled = true;
+      }
+
+      if (state === GameState.Win || state === GameState.Blocked) {
+        spinBtn.enabled = false;
+      }
+    });
+
+    spinBtn.container.on("pointerdown", () => {
+      const state = this.controller.state.state;
+
+      if (state === GameState.Idle) {
+        this.controller.requestSpin();
+      }
+
+      if (state === GameState.Spinning) {
+        this.controller.requestStop(); 
+      }
+    });
+
   }
 
   onStartClick() {

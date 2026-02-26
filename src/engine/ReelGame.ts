@@ -9,6 +9,7 @@ import { GameController } from "../controller/GameController";
 import { GameLoop } from "../core/GameLoop";
 import { SymbolAnimator } from "./SymbolAnimator";
 import { SoundManager } from "./SoundManager";
+import { GameState } from "../state/GameState";
 
 
 export class ReelGame {
@@ -74,14 +75,10 @@ export class ReelGame {
             SoundManager.getInstance().play(`reelspin${n}`);
             this.startReels(msg);
         }
-
-        if (msg.type === "spinResult") {
-            this.stopReels(msg.reels);
-            this.updateUI(msg.win, msg.credits);
-        }
     }
 
     startReels(msg: any) {
+        SoundManager.getInstance().play("reel_start");
         //console.log(msg);
         for (let i = 0; i < this.reelObjects.length; i++) {
             const reel = this.reelObjects[i];
@@ -104,8 +101,8 @@ export class ReelGame {
         this.symbolAnimator.playForSymbol(7, 0, 0, true);
         this.symbolAnimator.playForSymbol(7, 1, 0, true);
         this.symbolAnimator.playForSymbol(7, 2, 0, true);     
-        
         this.symbolAnimator.playForSymbol(8, 2, 2, true);     
+        this.controller.reelsStopped();
     }
 
     stopReel(id: number) {
@@ -114,12 +111,12 @@ export class ReelGame {
         this.reelObjects[id].stopSpin(symbols);
     }
 
-    stopReels(reelSymbols: string[][]) {
+    stopReels() {
+        SoundManager.getInstance().stopAll();
+        SoundManager.getInstance().play("forcedstop");
         for (let i = 0; i < this.reelObjects.length; i++) {
             const reel = this.reelObjects[i];
-            const symbols = reelSymbols[i];
-            const delay = 5000 + i * 200;
-            reel.stopSpin(symbols);
+            reel.setStopReel();
         }
     }
 
@@ -230,8 +227,22 @@ export class ReelGame {
         sm.load(
             "welcome",
             `games/fruitman/assets/sounds/welcome.mp3`,
-            `games/fruitman/assets/sounds/ogg/welcome.ogg`
+            `games/fruitman/assets/sounds/ogg/welcome.ogg`,
         );
+
+        sm.load(
+            "forcedstop",
+            `games/fruitman/assets/sounds/button_press_stop.mp3`,
+            `games/fruitman/assets/sounds/ogg/button_press_stop.ogg`,
+        );
+
+        sm.load(
+            "reel_start",
+            `games/fruitman/assets/sounds/reel_start.mp3`,
+            `games/fruitman/assets/sounds/ogg/reel_start.ogg`,
+        );
+
+        
     }
 
     destroy() {

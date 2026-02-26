@@ -83,9 +83,6 @@ export class Preloader {
   showTapToStart(onStart: () => void) {
       const overlay = new Graphics()
           .rect(0, 0, this.app.screen.width, this.app.screen.height).fill({ color: 0x000000, alpha: 0.6 });
-          //.fill(0x000000, 0.6);
-
-
 
       overlay.eventMode = "static";
       overlay.cursor = "pointer";
@@ -100,7 +97,7 @@ export class Preloader {
           }
       });
       text.anchor.set(0.5);
-      text.position.set(this.app.screen.width / 2, this.app.screen.height / 2);
+      text.position.set(this.app.screen.width / 2, this.app.screen.height / 2 - 70);
 
       const container = new Container();
       container.addChild(overlay, text);
