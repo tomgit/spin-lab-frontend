@@ -22,10 +22,13 @@ import { GameController } from "./controller/GameController";
 import { Winline } from "./objects/Winline";
 import { Texture } from "pixi.js";
 import { SoundManager } from "./engine/SoundManager";
+import { setupFullscreenSwipe } from "./utils/fullscreenSwipe";
 
 (async () => {
   const app = await createApp();
 
+  setupFullscreenSwipe();
+  
   if (import.meta.env.DEV) {
     globalThis.__PIXI_APP__ = app;
   }
