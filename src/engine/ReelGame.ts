@@ -8,9 +8,8 @@ import { Reel } from "../objects/Reel";
 import { GameController } from "../controller/GameController";
 import { GameLoop } from "../core/GameLoop";
 import { SymbolAnimator } from "./SymbolAnimator";
+import { WinAnimator } from "./WinAnimator";
 import { SoundManager } from "./SoundManager";
-import { GameState } from "../state/GameState";
-
 
 export class ReelGame {
     container = new Container();
@@ -44,6 +43,7 @@ export class ReelGame {
         this.createFG();
         this.createReels();
         this.createSymbolAnimator();
+        this.createWinAnimator();
         this.createMask();
         this.createHeader();
         this.loadSounds();
@@ -60,6 +60,11 @@ export class ReelGame {
         this.symbolAnimator = symbolAnimator;
     }
 
+     createWinAnimator() {
+        const winAnimator = new WinAnimator(this.app, this.controller, this.symbolAnimator);
+        this.controller.setWinAnimator(winAnimator);
+    }
+
     update(delta: number) {
         for (const reel of this.reelObjects) {
             reel.update(delta);
@@ -70,8 +75,8 @@ export class ReelGame {
         if (msg.type === "spinStart") {
             this.symbolAnimator.stopAll();
             this.symbolAnimator.removeAllWinFrames();
-            SoundManager.getInstance().stopAll();
             const n = Math.floor(Math.random() * 5) + 1;
+            SoundManager.getInstance().stopAll();
             SoundManager.getInstance().play(`reelspin${n}`);
             this.startReels(msg);
         }
@@ -79,29 +84,20 @@ export class ReelGame {
 
     startReels(msg: any) {
         SoundManager.getInstance().play("reel_start");
-        //console.log(msg);
         for (let i = 0; i < this.reelObjects.length; i++) {
             const reel = this.reelObjects[i];
-            reel.startSpin(35, msg.reels[i].reverse()); 
-            //reel.startSpin(26, msg.reels[i].reverse()); 
-            //reel.startSpin(8, msg.reels[i]); 
+            reel.startSpin(35, [...msg.reels[i]].reverse());
         }
-        //this.autoplay();
     }
 
     autoplay() {
         setTimeout(() => {
         this.symbolAnimator.stopAll();
            this.controller.requestSpin();
-           //this.startReels(msg.reverse) 
         }, 3800);
     }
 
     onSpinStop() {
-        this.symbolAnimator.playForSymbol(7, 0, 0, true);
-        this.symbolAnimator.playForSymbol(7, 1, 0, true);
-        this.symbolAnimator.playForSymbol(7, 2, 0, true);     
-        this.symbolAnimator.playForSymbol(8, 2, 2, true);     
         this.controller.reelsStopped();
     }
 
@@ -152,14 +148,12 @@ export class ReelGame {
     createMask() {
         const mask = new Graphics();
         mask.fill(0xffffff);
-
         mask.rect(
             this.reelBG.x - this.reelBG.width / 2,
             this.reelBG.y - this.reelBG.height / 2 + 50,
             this.reelBG.width,
             this.reelBG.height - 100
         );
-
         mask.fill();
         this.container.addChild(mask);
         this.reelArea.mask = mask;
@@ -175,7 +169,6 @@ export class ReelGame {
         const strip = this.manifest.symbolNames; 
         const reelSpacing = 324;
         const startX = -((reelCount - 1) * reelSpacing) / 2;
-
         for (let i = 0; i < reelCount; i++) {
             const reel = new Reel(this, sheet, strip, visibleSymbols, spacing, i);
             reel.init();
@@ -209,7 +202,6 @@ export class ReelGame {
 
     private loadSounds() {
         const sm = SoundManager.getInstance();
-
         for (let i = 1; i <= 5; i++) {
             sm.load(
                 `reelspin${i}`,
@@ -223,26 +215,31 @@ export class ReelGame {
                 `games/fruitman/assets/sounds/ogg/Reelstop ${i}.ogg`
             );
         }
-
         sm.load(
             "welcome",
             `games/fruitman/assets/sounds/welcome.mp3`,
             `games/fruitman/assets/sounds/ogg/welcome.ogg`,
         );
-
         sm.load(
             "forcedstop",
             `games/fruitman/assets/sounds/button_press_stop.mp3`,
             `games/fruitman/assets/sounds/ogg/button_press_stop.ogg`,
         );
-
         sm.load(
             "reel_start",
             `games/fruitman/assets/sounds/reel_start.mp3`,
             `games/fruitman/assets/sounds/ogg/reel_start.ogg`,
         );
-
-        
+        sm.load(
+            "winsound",
+            `games/fruitman/assets/sounds/Winsound 3 symbols 1 winline.mp3`,
+            `games/fruitman/assets/sounds/ogg/Winsound 3 symbols 1 winline.ogg`,
+        );
+        sm.load(
+            "writeup",
+            `games/fruitman/assets/sounds/Writeup 5 sec.mp3`,
+            `games/fruitman/assets/sounds/ogg/Writeup 2_5 sec.ogg`,
+        );
     }
 
     destroy() {

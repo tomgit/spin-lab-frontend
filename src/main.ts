@@ -21,7 +21,6 @@ import { ReelGame } from "./engine/ReelGame";
 import { GameController } from "./controller/GameController";
 import { Winline } from "./objects/Winline";
 import { Texture } from "pixi.js";
-import { SoundManager } from "./engine/SoundManager";
 import { setupFullscreenSwipe } from "./utils/fullscreenSwipe";
 
 (async () => {
@@ -57,7 +56,6 @@ import { setupFullscreenSwipe } from "./utils/fullscreenSwipe";
   const footer = new Footer(app, "/assets/footer.png", background, controller);
   await footer.init();
 
-
   // FPS display
   const stats = setupStats();
   setupDebugToggle(stats);
@@ -84,10 +82,8 @@ import { setupFullscreenSwipe } from "./utils/fullscreenSwipe";
   app.stage.addChild(winline.container);
 
   preloader.hide();
-
   preloader.showTapToStart(() => {
       reelgame.start();
   });
-
 
 })();

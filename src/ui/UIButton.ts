@@ -25,30 +25,26 @@ export class UIButton {
     text: string
   ) {
     this.textures = textures;
-
     this.sprite = new Sprite(textures.enabled);
     this.sprite.anchor.set(0.5);
-
     this.label = new Text({
       text,
       style: {
         fontFamily: "Montserrat",
-        fontSize: 54,
+        fontSize: 48,
         fontWeight: "700",
         fill: "#ffffff",
       },
     });
     this.label.anchor.set(0.5);
-
     this.container.addChild(this.sprite, this.label);
-
     this.container.eventMode = "static";
     this.container.cursor = "pointer";
-
     this.registerEvents();
   }
 
   private registerEvents() {
+
     this.container.on("pointerover", () => {
       if (!this._enabled) return;
       this.sprite.texture = this.textures.hover;
@@ -68,6 +64,7 @@ export class UIButton {
       if (!this._enabled) return;
       this.sprite.texture = this.textures.hover;
     });
+  
   }
 
   set enabled(v: boolean) {
@@ -79,4 +76,5 @@ export class UIButton {
   get enabled() {
     return this._enabled;
   }
+  
 }

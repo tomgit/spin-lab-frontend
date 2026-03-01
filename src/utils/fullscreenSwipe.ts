@@ -34,4 +34,5 @@ async function exitFullscreen() {
   } else if ((document as any).webkitExitFullscreen) {
     (document as any).webkitExitFullscreen();
   }
+
 }

@@ -1,7 +1,7 @@
+//SymbolAnimator.ts
 import { Assets, AnimatedSprite, Container, Texture, Sprite } from "pixi.js";
 import { Reel } from "../objects/Reel";
 import { gsap } from "gsap";
-
 
 export class SymbolAnimator {
     container = new Container();
@@ -10,10 +10,8 @@ export class SymbolAnimator {
     private animationFrames: Record<number, Texture[]> = {};
     private reels: Reel[];
     private runningAnimations: AnimatedSprite[] = [];
-    private winFrameTextures: Record<string, Texture> = {};
     private winFrames: Record<string, Texture> = {};
     private activeWinFrames: Sprite[] = [];
-
 
     constructor(reels: Reel[]) {
         this.reels = reels;
@@ -88,52 +86,56 @@ export class SymbolAnimator {
     }
 
     /** Egy szimbólum animációjának indítása (egyszeri vagy végtelenített) */
-    playForSymbol(symbolId: number, reelIndex: number, rowIndex: number, loop: boolean = false) {
+    playForSymbol(symbolId: number, reelIndex: number, rowIndex: number, frameName: string, onDone?: () => void) {
         const reel = this.reels[reelIndex];
         const symbol = reel.sprites[rowIndex];
         if (!symbol) return;
-
         const globalPos = symbol.getGlobalPosition();
         const localPos = this.container.parent!.toLocal(globalPos);
-
-        this.createWinFrameForSymbol(0, 0, "frame_03.png");
-        this.createWinFrameForSymbol(1, 0, "frame_03.png");
-        this.createWinFrameForSymbol(2, 0, "frame_03.png");
-        this.createWinFrameForSymbol(2, 2, "frame_03.png");
-
+        // 1) FRAME LÉTREHOZÁSA
+        const frame = this.createWinFrameForSymbol(reelIndex, rowIndex, frameName);
+        // 2) ANIMÁCIÓ INDÍTÁSA
         return this.play(
             symbolId,
             localPos.x + symbol.width / 2,
             localPos.y + symbol.height / 2,
-            loop
+            () => {
+                // 3) FRAME ELTÁVOLÍTÁSA
+                if (frame) this.removeWinFrame(frame);
+                // 4) CALLBACK TOVÁBBADÁSA
+                if (onDone) onDone();
+            }
         );
     }
 
     /** Új AnimatedSprite példány létrehozása és elindítása */
-    play(symbolId: number, x: number, y: number, loop: boolean = false) {
+    play(symbolId: number, x: number, y: number, onDone?: () => void) {
         const frames = this.animationFrames[symbolId];
         if (!frames) return;
-
         const anim = new AnimatedSprite(frames);
         anim.anchor.set(0);
         anim.scale.set(0.82);
         anim.animationSpeed = 0.6;
-        anim.loop = loop;
-
+        anim.loop = false;
         anim.x = x - 303;
         anim.y = y + 13;
-
         this.animContainer.addChild(anim);
         this.runningAnimations.push(anim);
-
-        anim.gotoAndPlay(0);
-
-        if (!loop) {
-            anim.onComplete = () => {
+        // saját loop számláló
+        let remaining = 1;
+        const playOnce = () => {
+            anim.gotoAndPlay(0);
+        };
+        anim.onComplete = () => {
+            if (remaining > 0) {
+                remaining--;
+                playOnce();
+            } else {
                 this.stopAnimation(anim);
-            };
-        }
-
+                if (onDone) onDone();
+            }
+        };
+        playOnce();
         return anim;
     }
 
@@ -142,7 +144,7 @@ export class SymbolAnimator {
         anim.stop();
         this.animContainer.removeChild(anim);
         anim.destroy();
-
+        this.removeAllWinFrames();
         const index = this.runningAnimations.indexOf(anim);
         if (index !== -1) {
             this.runningAnimations.splice(index, 1);
@@ -151,6 +153,7 @@ export class SymbolAnimator {
 
     /** Minden futó animáció leállítása */
     stopAll() {
+        this.removeAllWinFrames();
         for (const anim of this.runningAnimations) {
             anim.stop();
             this.animContainer.removeChild(anim);

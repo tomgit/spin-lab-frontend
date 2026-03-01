@@ -34,4 +34,5 @@ export class Background {
     this.app.renderer.off("resize", this.resize, this);
     this.sprite.destroy();
   }
+  
 }

@@ -3,7 +3,6 @@ export class SoundManager {
     private static instance: SoundManager;
     private sounds: Record<string, HTMLAudioElement[]> = {};
     private volume: number = 1;
-
     private constructor() {}
 
     static getInstance() {
@@ -15,17 +14,14 @@ export class SoundManager {
 
     load(name: string, mp3Path: string, oggPath: string, instances: number = 5) {
         this.sounds[name] = [];
-
         for (let i = 0; i < instances; i++) {
             const audio = new Audio();
             audio.volume = this.volume;
-
             if (audio.canPlayType("audio/ogg")) {
                 audio.src = oggPath;
             } else {
                 audio.src = mp3Path;
             }
-
             this.sounds[name].push(audio);
         }
     }
@@ -33,10 +29,8 @@ export class SoundManager {
     play(name: string) {
         const list = this.sounds[name];
         if (!list) return;
-
         const audio = list.find(a => a.paused);
         const a = audio ?? list[0];
-
         a.currentTime = 0;
         a.play();
     }
@@ -61,7 +55,6 @@ export class SoundManager {
         }
     }
 
-
     setVolume(v: number) {
         this.volume = v;
         for (const key in this.sounds) {
@@ -70,4 +63,5 @@ export class SoundManager {
             }
         }
     }
+    
 }

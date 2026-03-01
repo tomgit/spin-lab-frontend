@@ -1,25 +1,37 @@
+//GameController.ts
 import { GameStateManager } from "../engine/GameStateManager";
 import { GameState } from "../state/GameState";
+import { WinAnimator } from "../engine/WinAnimator";
+import { dummySpins } from "../data/dummySpins";
+import { SoundManager } from "../engine/SoundManager";
 
-//GameController.ts
 export class GameController {
   state = new GameStateManager();
+  autoplayEnabled = false;
   private listeners: ((msg: any) => void)[] = [];
   private reelGame: any;
   private inputLocked = false;
+  private spinMsg: any;
+  private winAnimator: WinAnimator | undefined;
 
   constructor() {
     window.addEventListener("keydown", (e) => this.onKeyDown(e));
   }
 
+  toggleAutoplay() { 
+    this.autoplayEnabled = !this.autoplayEnabled; 
+  }
+
+  setWinAnimator(winAnimator: WinAnimator) {
+    this.winAnimator = winAnimator;
+  }
+
   onKeyDown(e: KeyboardEvent) {
     if (e.code !== "Space") return;
     if (this.inputLocked) return;
-
     this.lockInput();
-
     const state = this.state.state;
-    if (state === GameState.Idle) {
+    if (state === GameState.Idle || state === GameState.Win) {
       this.requestSpin();
     }
     if (state === GameState.Spinning) {
@@ -48,29 +60,31 @@ export class GameController {
     }
   }
 
+  // When all reels stopped
   reelsStopped() { 
-    this.state.setState(GameState.Idle); 
+    if (this.spinMsg.winlines.length > 0) {
+      this.state.setState(GameState.Win); 
+      SoundManager.getInstance().play("winsound");
+      SoundManager.getInstance().play("writeup");
+      this.winAnimator!.start(this.spinMsg);
+    } else {
+        this.state.setState(GameState.Idle); 
+      }
   }
+
+  animationStopped() {
+    this.state.setState(GameState.Idle); 
+    console.log('controller animationStopped()');
+  }  
 
   requestStop() {
     this.reelGame.stopReels();
   }
 
   requestSpin() {
-    if (this.state.state !== GameState.Idle) return;
+    if (this.state.state !== GameState.Idle && this.state.state !== GameState.Win) return;
     this.state.setState(GameState.Spinning);
-    const dummy = {
-      type: "spinStart",
-      reels: [
-        ["6", "0", "0"],
-        ["6", "2", "2"],
-        ["6", "3", "7"],
-        ["4", "4", "4"],
-        ["5", "5", "7"],
-      ],
-      win: 120,
-      credits: 880,
-    };
-    this.sendMessage(dummy);
+    this.spinMsg = dummySpins[Math.floor(Math.random() * dummySpins.length)];
+    this.sendMessage(this.spinMsg);
   }
 }

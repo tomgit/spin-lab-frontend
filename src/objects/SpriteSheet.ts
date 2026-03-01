@@ -8,7 +8,6 @@ export class SpriteSheet {
 
   async init() {
     this.sheet = await Assets.load(this.url);
-
     if (!this.sheet?.textures) {
       throw new Error(`Spritesheet ${this.url} has no textures`);
     }
@@ -25,4 +24,5 @@ export class SpriteSheet {
   create(name: string): Sprite {
     return new Sprite(this.getTexture(name));
   }
+  
 }

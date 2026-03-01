@@ -33,7 +33,6 @@ export class Reel {
     init() {
         for (let i = 0; i < this.visibleCount + 1; i++) {
             const s = new Sprite(this.sheet.textures[this.strip[Math.floor(Math.random() * 8)]]);
-            //const s = new Sprite(this.sheet.textures[this.strip[6]]);
             s.anchor.set(0.5);
             s.scale.set(0.82);
             s.y = i * this.spacing;
@@ -45,8 +44,6 @@ export class Reel {
     }
 
     startSpin(initialSpeed = 2000, msg: any) {
-        const reversed = [...msg].reverse();
-        //console.log(reversed);
         this.finalSymbols = msg;
         this.spinCount = 0;
         this.speed = initialSpeed;
@@ -57,7 +54,6 @@ export class Reel {
 
     // STOP 
     stopSpin(finalSymbols: string[]) {
-        //this.finalSymbols = finalSymbols;
         this.stopping = true;
     }
 
@@ -121,9 +117,7 @@ export class Reel {
     private finishStop() {
         this.spinning = false;
         this.stopping = false;
-        // spacing snap — csak MOST, egyszer
         this.virtualPos = 0;
-        // sprite-ok pontos helyre
         for (let i = 0; i < this.sprites.length; i++) {
             this.sprites[i].y = i * this.spacing;
         }
@@ -137,8 +131,7 @@ export class Reel {
         const baseY = this.container.y;
         gsap.fromTo(
             this.container,
-            { y: baseY + 10 },
-            {
+            { y: baseY + 10 }, {
                 y: baseY,
                 duration: 0.35,
                 ease: "sine.out",

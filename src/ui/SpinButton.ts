@@ -13,7 +13,7 @@ export class SpinButton extends UIButton {
       pressed: Texture;
     }
   ) {
-    super(textures, "START"); // alapértelmezett felirat
+    super(textures, "START"); 
   }
 
   set mode(value: "start" | "stop") {
@@ -24,4 +24,5 @@ export class SpinButton extends UIButton {
   get mode() {
     return this._mode;
   }
+  
 }

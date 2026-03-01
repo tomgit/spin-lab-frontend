@@ -22,15 +22,11 @@ export class Winline {
             this.container.addChild(sprite);
             this.lines.push(sprite);
         }
-        //this.showLine(9);
-        //this.showAll();
     }
-
 
     showLine(index: number) {
         const line = this.lines[index];
         if (!line) return;
-
         line.visible = true;
         gsap.to(line, { alpha: 1, duration: 0.3 });
     }
@@ -38,7 +34,6 @@ export class Winline {
     hideLine(index: number) {
         const line = this.lines[index];
         if (!line) return;
-
         gsap.to(line, { alpha: 0, duration: 0.3, onComplete: () => {
             line.visible = false;
         }});
@@ -57,4 +52,5 @@ export class Winline {
             line.alpha = 1;
         }
     }    
+
 }

@@ -6,7 +6,6 @@ export async function createApp() {
 
   await app.init({
     antialias: true,
-    //resolution: window.devicePixelRatio,
     resolution: Math.min(window.devicePixelRatio, 2),
     autoDensity: true,
     background: "#000000",
