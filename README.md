@@ -1,7 +1,10 @@
 # spin-lab-frontend
+Live Demo
+https://tomgit.github.io/spin-lab-frontend/
 
-A lightweight PixiJS + TypeScript slot engine prototype with reels, animations and mock backend.
+Source Code
+https://github.com/tomgit/spin-lab-frontend
 
-A minimal slot engine prototype built with PixiJS, TypeScript and GSAP.
-
-Designed as a playground for experimenting with iGaming front-end concepts.
+Running Locally
+npm install
+npm run dev
