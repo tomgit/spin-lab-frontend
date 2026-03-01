@@ -79,24 +79,32 @@ export class Preloader {
 
   showTapToStart(onStart: () => void) {
       const overlay = new Graphics()
-          .rect(0, 0, this.app.screen.width, this.app.screen.height).fill({ color: 0x000000, alpha: 0.6 });
-      overlay.eventMode = "static";
-      overlay.cursor = "pointer";
+          .rect(0, 0, this.app.screen.width, this.app.screen.height)
+          .fill({ color: 0x000000, alpha: 0.6 });
+
+      const scale = Math.min(
+          this.app.screen.width / 1080,
+          this.app.screen.height / 1920
+      );
+
       const text = new Text({
           text: "TAP TO START",
           style: {
               fontFamily: "Montserrat",
-              fontSize: 64,
+              fontSize: 120 * scale,
               fill: "#ffffff",
               fontWeight: "bold",
           }
       });
+
       text.anchor.set(0.5);
       text.position.set(this.app.screen.width / 2, this.app.screen.height / 2 - 70);
+
       const container = new Container();
       container.addChild(overlay, text);
       this.app.stage.addChild(container);
-      overlay.eventMode = "static"; 
+
+      overlay.eventMode = "static";
       overlay.cursor = "pointer";
       overlay.on("pointerdown", () => {
           onStart();
