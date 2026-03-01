@@ -1,6 +1,6 @@
 # spin-lab-frontend
 Live Demo
-https://tomgit.github.io/spin-lab-frontend/
+https://pixi-slot-demo.netlify.app
 
 Source Code
 https://github.com/tomgit/spin-lab-frontend
