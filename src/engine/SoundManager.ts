@@ -29,6 +29,22 @@ export class SoundManager {
     play(name: string) {
         const list = this.sounds[name];
         if (!list) return;
+        const audio = list.find(a => a.paused) ?? list[0];
+        try {
+            audio.pause();          
+            audio.currentTime = 0;
+            const p = audio.play(); 
+            if (p && typeof p.catch === "function") {
+                p.catch(() => {});  
+            }
+        } catch (e) {
+            // egyes böngészők dobhatnak sync hibát is
+        }
+    }
+
+    oldplay(name: string) {
+        const list = this.sounds[name];
+        if (!list) return;
         const audio = list.find(a => a.paused);
         const a = audio ?? list[0];
         a.currentTime = 0;

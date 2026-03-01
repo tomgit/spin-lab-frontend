@@ -10,18 +10,18 @@ export class GameController {
   autoplayEnabled = false;
   private listeners: ((msg: any) => void)[] = [];
   private reelGame: any;
-  private inputLocked = false;
+  private spaceDown = false;
   private spinMsg: any;
   private winAnimator: WinAnimator | undefined;
 
   constructor() {
     window.addEventListener("keydown", (e) => this.onKeyDown(e));
+    window.addEventListener("keyup", (e) => this.onKeyUp(e));
   }
 
   get lastSpin() {
     return this.spinMsg;
   }
-
 
   toggleAutoplay() { 
     this.autoplayEnabled = !this.autoplayEnabled; 
@@ -33,23 +33,24 @@ export class GameController {
 
   onKeyDown(e: KeyboardEvent) {
     if (e.code !== "Space") return;
-    if (this.inputLocked) return;
-    this.lockInput();
+    // ha már le van nyomva, ne csináljunk semmit
+    if (this.spaceDown) return;
+    this.spaceDown = true;
     const state = this.state.state;
+    if (state === GameState.Spinning) {
+      this.requestStop();
+      return;
+    }
     if (state === GameState.Idle || state === GameState.Win) {
       this.requestSpin();
     }
-    if (state === GameState.Spinning) {
-      this.requestStop();
-    }
-  }  
+  }
 
-  private lockInput() {
-    this.inputLocked = true;
-    setTimeout(() => {
-      this.inputLocked = false;
-    }, 200); 
-  }  
+  onKeyUp(e: KeyboardEvent) {
+    if (e.code === "Space") {
+      this.spaceDown = false;
+    }
+  }
 
   setReelGame(game: any) { 
     this.reelGame = game; 
@@ -83,6 +84,8 @@ export class GameController {
   }  
 
   requestStop() {
+    if (this.state.state !== GameState.Spinning) return;
+    this.state.setState(GameState.Blocked);
     this.reelGame.stopReels();
   }
 

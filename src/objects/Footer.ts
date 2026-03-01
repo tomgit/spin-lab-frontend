@@ -18,7 +18,6 @@ export class Footer {
   container = new Container();
   sprite!: Sprite;
   private stopBlink: (() => void) | null = null;
-  private autoplayEnabled = false;
   private winPanelSprite!: Sprite;
   private winText!: Text;
   private winLabel!: Text;
@@ -227,6 +226,9 @@ export class Footer {
       SoundManager.getInstance().play("reel_start");
       this.controller.toggleAutoplay();
       autoplayBtn.enabled = !this.controller.autoplayEnabled;
+      if (this.controller.autoplayEnabled && this.controller.state.state === GameState.Idle) { 
+        this.controller.requestSpin(); 
+      }
     });
   }
 
