@@ -18,6 +18,11 @@ export class GameController {
     window.addEventListener("keydown", (e) => this.onKeyDown(e));
   }
 
+  get lastSpin() {
+    return this.spinMsg;
+  }
+
+
   toggleAutoplay() { 
     this.autoplayEnabled = !this.autoplayEnabled; 
   }

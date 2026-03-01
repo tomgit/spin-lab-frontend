@@ -1,5 +1,5 @@
 // Footer.ts
-import { Application, Assets, Sprite, Container, Texture } from "pixi.js";
+import { Application, Assets, Sprite, Container, Texture, Text, TextStyle } from "pixi.js";
 import { Background } from "./Background";
 import { SpriteSheet } from "./SpriteSheet";
 import FontFaceObserver from "fontfaceobserver";
@@ -20,6 +20,14 @@ export class Footer {
   private stopBlink: (() => void) | null = null;
   private autoplayEnabled = false;
   private autoplaySprite!: Sprite;
+  private winPanelSprite!: Sprite;
+  private winPanelText!: Text;
+  private winText!: Text;
+  private winLabel!: Text;
+  private creditsLabel!: Text;
+  private creditsValue!: Text;
+  private betLabel!: Text;
+  private betValue!: Text;
 
   constructor(
     private app: Application,
@@ -39,8 +47,198 @@ export class Footer {
     await uiSheet.init();
     this.createAutoplayButton(uiSheet);
     this.createSpinButton(uiSheet);
+    //this.createCoinPanel(uiSheet);
+    //this.createBetPanel(uiSheet);
+    this.createWinPanel(uiSheet);
+    this.createCredits(uiSheet);
+    this.createBet(uiSheet);
+    this.setWinPanelVisibility(false);
     this.resize();
     this.app.renderer.on("resize", () => this.resize());
+  }
+
+  createCoinPanel(uiSheet: SpriteSheet) {
+    const coinTex = uiSheet.getTexture("dt_gui_betpanel");
+    const coinPanel = new Sprite(coinTex);
+    coinPanel.anchor.set(0.5, 1); 
+    coinPanel.y = -160; 
+    coinPanel.x = 750;   
+    this.container.addChild(coinPanel);
+  }
+
+  createBetPanel(uiSheet: SpriteSheet) {
+    const coinTex = uiSheet.getTexture("dt_gui_coinpanel");
+    const coinPanel = new Sprite(coinTex);
+    coinPanel.anchor.set(0.5, 1); 
+    coinPanel.y = -160; 
+    coinPanel.x = -560;   
+    this.container.addChild(coinPanel);
+  }  
+
+  setWinPanelVisibility(b: boolean) {
+    this.winText.visible = b;
+    this.winPanelSprite.visible = b;
+    this.winLabel.visible = b;
+  }
+
+  createWinPanel(uiSheet: SpriteSheet) {
+    const panelTex = uiSheet.getTexture("winpanel_bg");
+    const panel = new Sprite(panelTex);
+    this.winPanelSprite = panel;
+
+    panel.anchor.set(0.5, 1);
+    panel.y = -160;
+    panel.x = 0;
+
+    this.container.addChild(panel);
+
+    // --- WIN TEXT ---
+    const style = new TextStyle({
+      fontFamily: "Montserrat",
+      fontSize: 78,
+      fill: 0xffd700,
+      fontWeight: "700",
+      stroke: { color: 0x000000, width: 6 },
+      align: "center",
+    });
+
+    this.winText = new Text({
+      text: "0",
+      style,
+    });
+    this.winText.anchor.set(0.5);
+    this.winText.x = panel.x;
+    this.winText.y = panel.y - panel.height / 2 + 20;
+    this.container.addChild(this.winText);
+
+    const labelStyle = new TextStyle({
+      fontFamily: "Montserrat",
+      fontSize: 50,
+      fill: 0xffffff,
+      fontWeight: "700",
+      stroke: { color: 0x000000, width: 6 },
+      align: "center",
+    });
+
+    this.winLabel = new Text({
+      text: "Win:",
+      style: labelStyle,
+    });
+
+    this.winLabel.anchor.set(0.5);
+    this.winLabel.x = panel.x;
+    this.winLabel.y = panel.y - panel.height / 2 - 45;
+    this.container.addChild(this.winLabel);
+  }
+
+  startWinCounter(targetValue: number) {
+    let current = 0;
+    const duration = 60; // kb. 1 másodperc (60 frame)
+    let frame = 0;
+    const update = () => {
+      frame++;
+      const t = frame / duration;
+      const eased = t < 1 ? t * t * (3 - 2 * t) : 1; // smoothstep easing
+      current = Math.floor(targetValue * eased);
+      this.winText.text = String(current);
+      if (t >= 1) {
+        this.app.ticker.remove(update);
+        this.winText.text = String(targetValue);
+      }
+    };
+    this.app.ticker.add(update);
+  }
+
+  createCredits(uiSheet: SpriteSheet) {
+    const labelStyle = new TextStyle({
+      fontFamily: "Montserrat",
+      fontSize: 42,
+      fill: 0xffd700,
+      fontWeight: "700",
+      stroke: { color: 0x000000, width: 5 },
+    });
+
+    const valueStyle = new TextStyle({
+      fontFamily: "Montserrat",
+      fontSize: 52,
+      fill: 0xffffff,
+      fontWeight: "700",
+      stroke: { color: 0x000000, width: 6 },
+    });
+
+    // LABEL
+    this.creditsLabel = new Text({
+      text: "CREDITS:",
+      style: labelStyle,
+    });
+    this.creditsLabel.anchor.set(0.5);
+    this.creditsLabel.x = -1150;
+    this.creditsLabel.y = -270;
+
+    // VALUE
+    this.creditsValue = new Text({
+      text: "10000",
+      style: valueStyle,
+    });
+    this.creditsValue.anchor.set(0, 0.5);
+    this.creditsValue.x = -1030;
+    this.creditsValue.y = -270;
+    this.container.addChild(this.creditsLabel, this.creditsValue);
+  }
+
+  startCreditsCounter(from: number, to: number) {
+    let frame = 0;
+    const duration = 60; // kb. 1 másodperc
+    const update = () => {
+      frame++;
+      const t = frame / duration;
+      const eased = t < 1 ? t * t * (3 - 2 * t) : 1; // smoothstep
+      const value = Math.floor(from + (to - from) * eased);
+      this.creditsValue.text = String(value);
+      if (t >= 1) {
+        this.app.ticker.remove(update);
+        this.creditsValue.text = String(to);
+      }
+    };
+    this.app.ticker.add(update);
+  }
+
+  createBet(uiSheet: SpriteSheet) {
+    const labelStyle = new TextStyle({
+      fontFamily: "Montserrat",
+      fontSize: 42,
+      fill: 0xffd700,
+      fontWeight: "700",
+      stroke: { color: 0x000000, width: 5 },
+    });
+
+    const valueStyle = new TextStyle({
+      fontFamily: "Montserrat",
+      fontSize: 52,
+      fill: 0xffffff,
+      fontWeight: "700",
+      stroke: { color: 0x000000, width: 6 },
+    });
+
+    // LABEL
+    this.betLabel = new Text({
+      text: "BET:",
+      style: labelStyle,
+    });
+    this.betLabel.anchor.set(0.5);
+    this.betLabel.x = 1070;
+    this.betLabel.y = -270;
+
+    // VALUE
+    this.betValue = new Text({
+      text: "100",
+      style: valueStyle,
+    });
+    this.betValue.anchor.set(0, 0.5);
+    this.betValue.x = 1130;
+    this.betValue.y = -270;
+
+    this.container.addChild(this.betLabel, this.betValue);
   }
 
   // -------------------------------------------------------
@@ -72,6 +270,25 @@ export class Footer {
         if (this.controller.autoplayEnabled && state === GameState.Idle) {
             this.controller.requestSpin();
         }
+        if (state === GameState.Idle || state === GameState.Spinning) {
+          this.setWinPanelVisibility(false)
+          if (state === GameState.Spinning) {
+            const currentCredits = Number(this.creditsValue.text) || 0; 
+            const newCredits = currentCredits - 100; // tét levonása this.startCreditsDecrease(currentCredits, newCredits);
+            this.creditsValue.text = newCredits;
+          }
+        } else 
+        if (state === GameState.Win) {
+          this.setWinPanelVisibility(true)
+          const win = this.controller.lastSpin?.win ?? 0; 
+          this.startWinCounter(win);
+          // credits animáció (jelenlegi érték → jelenlegi + win) 
+          const currentCredits = Number(this.creditsValue.text) || 0; 
+          const newCredits = currentCredits + win; 
+          this.creditsValue.text = newCredits;
+          //this.startCreditsCounter(currentCredits, newCredits);
+        }
+
     });
   }
 

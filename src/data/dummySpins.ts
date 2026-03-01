@@ -14,7 +14,7 @@ export const dummySpins = [
         [1,1,1,1,1],
         [5,5,5],
       ],
-      win: 50,
+      win: 2500,
       credits: 1000,
   },
 
@@ -31,7 +31,7 @@ export const dummySpins = [
     winSymbols: [
       [1, 1, 1, 1, 1]
     ],
-    win: 10,
+    win: 500,
     credits: 1000,
   },
 
@@ -116,7 +116,7 @@ export const dummySpins = [
     ],
     winlines: [5],
     winSymbols: [7,3,7,3],
-    win: 20,
+    win: 600,
     credits: 1000,
   },
       {
@@ -192,7 +192,7 @@ export const dummySpins = [
       [7, 3, 3],
       [3, 3, 3]
     ],
-    win: 20,
+    win: 2000,
     credits: 1000,
   },  
 
